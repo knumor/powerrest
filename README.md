@@ -5,7 +5,7 @@
 Restful API for PowerDNS. It's written in Go (golang) and is extremely light on resources.
 
 ## Limitations
-* PowerRest only supports MySQL at the moment. PostgreSQL support would be trivial but I don't have the bandwidth to test it at the moment.
+* PowerRest supports MySQL and PostgreSQL. Use either `mysql` or `postgres` in the config file.
 * No authentication support. It should be used only in trusted environments or behind a reverse proxy that has authentication.
 
 ## Examples using Curl

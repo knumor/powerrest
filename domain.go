@@ -18,7 +18,13 @@ func NewDomain(name string) *Domain {
 }
 
 func FindDomain(id int) (*Domain, error) {
-	row := db.QueryRow("SELECT id, name, type FROM domains WHERE id = ?", id)
+	sql := "SELECT id, name, type FROM domains WHERE id = $1"
+
+	if config.DbType == "mysql" {
+		sql = "SELECT id, name, type FROM domains WHERE id = ?"
+	}
+
+	row := db.QueryRow(sql, id)
 
 	d := &Domain{}
 	err := row.Scan(
@@ -56,7 +62,11 @@ func AllDomains() []*Domain {
 }
 
 func (d *Domain) Create() error {
-	sql := "INSERT INTO domains (name, type) VALUES (?, ?)"
+	sql := "INSERT INTO domains (name, type) VALUES ($1, $2)"
+
+	if config.DbType == "mysql" {
+		sql = "INSERT INTO domains (name, type) VALUES (?, ?)"
+	}
 
 	_, err := db.Exec(
 		sql,
@@ -67,7 +77,11 @@ func (d *Domain) Create() error {
 }
 
 func (d *Domain) Update() error {
-	sql := "UPDATE domains SET name=? WHERE id=?"
+	sql := "UPDATE domains SET name=$1 WHERE id=$2"
+
+	if config.DbType == "mysql" {
+		sql = "UPDATE domains SET name=? WHERE id=?"
+	}
 
 	_, err := db.Exec(sql, d.Name, d.Id)
 
@@ -75,8 +89,13 @@ func (d *Domain) Update() error {
 }
 
 func (d *Domain) Delete() error {
-	sql := "DELETE FROM domains WHERE id = ?"
-	recSql := "DELETE FROM records WHERE domain_id = ?"
+	sql := "DELETE FROM domains WHERE id = $1"
+	recSql := "DELETE FROM records WHERE domain_id = $1"
+
+	if config.DbType == "mysql" {
+		sql = "DELETE FROM domains WHERE id = ?"
+		recSql = "DELETE FROM records WHERE domain_id = ?"
+	}
 
 	tx, err := db.Begin()
 	if err != nil {

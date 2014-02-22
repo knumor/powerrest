@@ -18,7 +18,13 @@ type Record struct {
 }
 
 func FindRecord(id int) (*Record, error) {
-	row := db.QueryRow("SELECT id, domain_id, name, type, content, ttl, prio FROM records WHERE id = ?", id)
+	sql := "SELECT id, domain_id, name, type, content, ttl, prio FROM records WHERE id = $1"
+
+	if config.DbType == "mysql" {
+		sql = "SELECT id, domain_id, name, type, content, ttl, prio FROM records WHERE id = ?"
+	}
+
+	row := db.QueryRow(sql, id)
 
 	r := &Record{}
 	err := row.Scan(
@@ -64,7 +70,11 @@ func AllRecords() []*Record {
 }
 
 func (r *Record) Create() error {
-	sql := "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES (?, ?, ?, ?, ?, ?)"
+	sql := "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ($1, $2, $3, $4, $5, $6)"
+
+	if config.DbType == "mysql" {
+		sql = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES (?, ?, ?, ?, ?, ?)"
+	}
 
 	_, err := db.Exec(
 		sql,
@@ -79,7 +89,11 @@ func (r *Record) Create() error {
 }
 
 func (r *Record) Update() error {
-	sql := "UPDATE records SET name=?, type=?, content=?, ttl=?, prio=? WHERE id=?"
+	sql := "UPDATE records SET name=$1, type=$2, content=$3, ttl=$4, prio=$5 WHERE id=$6"
+
+	if config.DbType == "mysql" {
+		sql = "UPDATE records SET name=?, type=?, content=?, ttl=?, prio=? WHERE id=?"
+	}
 
 	_, err := db.Exec(sql, r.Name, r.Type, r.Content, r.Ttl, r.Priority, r.Id)
 
@@ -87,7 +101,11 @@ func (r *Record) Update() error {
 }
 
 func (r *Record) Delete() error {
-	sql := "DELETE FROM records WHERE id = ?"
+	sql := "DELETE FROM records WHERE id = $1"
+
+	if config.DbType == "mysql" {
+		sql = "DELETE FROM records WHERE id = ?"
+	}
 
 	_, err := db.Exec(sql, r.Id)
 
