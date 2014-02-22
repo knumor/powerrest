@@ -64,11 +64,10 @@ func AllRecords() []*Record {
 }
 
 func (r *Record) Create() error {
-	sql := "INSERT INTO records (id, domain_id, name, type, content, ttl, prio) VALUES (?, ?, ?, ?, ?, ?, ?)"
+	sql := "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES (?, ?, ?, ?, ?, ?)"
 
 	_, err := db.Exec(
 		sql,
-		r.Id,
 		r.DomainId,
 		r.Name,
 		r.Type,

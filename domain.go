@@ -56,11 +56,10 @@ func AllDomains() []*Domain {
 }
 
 func (d *Domain) Create() error {
-	sql := "INSERT INTO domains (id, name, type) VALUES (?, ?, ?)"
+	sql := "INSERT INTO domains (name, type) VALUES (?, ?)"
 
 	_, err := db.Exec(
 		sql,
-		d.Id,
 		d.Name,
 		d.Type,
 	)
