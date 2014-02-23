@@ -14,7 +14,7 @@ Restful API for PowerDNS. It's written in Go (golang) and is extremely light on 
 
 List domains
 
-`curl "http://127.0.0.1/domains"`
+`curl "http://127.0.0.1/v1/domains"`
 
 Create new domain
 
@@ -32,7 +32,7 @@ Delete a domain
 
 List records
 
-`curl "http://127.0.0.1/records"`
+`curl "http://127.0.0.1/v1/records"`
 
 Create new record
 
