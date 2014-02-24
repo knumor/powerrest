@@ -74,7 +74,8 @@ func (r *Record) Create() error {
 		"VALUES ($1, $2, $3, $4, $5, $6, extract(epoch from now())::integer)"
 
 	if conf.DbType == "mysql" {
-		sql = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES (?, ?, ?, ?, ?, ?)"
+		sql = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) " +
+			" VALUES (?, ?, ?, ?, ?, ?, UNIX_TIMESTAMP())"
 	}
 
 	_, err := db.Exec(
@@ -94,7 +95,8 @@ func (r *Record) Update() error {
 		"change_date=extract(epoch from now())::integer WHERE id=$6"
 
 	if conf.DbType == "mysql" {
-		sql = "UPDATE records SET name=?, type=?, content=?, ttl=?, prio=? WHERE id=?"
+		sql = "UPDATE records SET name=?, type=?, content=?, ttl=?, prio=?, " +
+			"change_date=UNIX_TIMESTAMP() WHERE id=?"
 	}
 
 	_, err := db.Exec(sql, r.Name, r.Type, r.Content, r.Ttl, r.Priority, r.Id)
