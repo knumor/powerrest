@@ -70,7 +70,8 @@ func AllRecords() []*Record {
 }
 
 func (r *Record) Create() error {
-	sql := "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ($1, $2, $3, $4, $5, $6)"
+	sql := "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) " +
+		"VALUES ($1, $2, $3, $4, $5, $6, extract(epoch from now())::integer)"
 
 	if config.DbType == "mysql" {
 		sql = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES (?, ?, ?, ?, ?, ?)"
@@ -89,7 +90,8 @@ func (r *Record) Create() error {
 }
 
 func (r *Record) Update() error {
-	sql := "UPDATE records SET name=$1, type=$2, content=$3, ttl=$4, prio=$5 WHERE id=$6"
+	sql := "UPDATE records SET name=$1, type=$2, content=$3, ttl=$4, prio=$5, " +
+		"change_date=extract(epoch from now())::integer WHERE id=$6"
 
 	if config.DbType == "mysql" {
 		sql = "UPDATE records SET name=?, type=?, content=?, ttl=?, prio=? WHERE id=?"
