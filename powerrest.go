@@ -2,8 +2,8 @@ package main
 
 import (
 	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/lib/pq"
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 
 	"database/sql"
 	"log"
