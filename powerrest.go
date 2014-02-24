@@ -16,7 +16,8 @@ var (
 )
 
 func main() {
-	conf, err := LoadConfig()
+	var err error
+	conf, err = LoadConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
