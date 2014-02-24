@@ -20,7 +20,7 @@ func NewDomain(name string) *Domain {
 func FindDomain(id int) (*Domain, error) {
 	sql := "SELECT id, name, type FROM domains WHERE id = $1"
 
-	if config.DbType == "mysql" {
+	if conf.DbType == "mysql" {
 		sql = "SELECT id, name, type FROM domains WHERE id = ?"
 	}
 
@@ -64,7 +64,7 @@ func AllDomains() []*Domain {
 func (d *Domain) Create() error {
 	sql := "INSERT INTO domains (name, type) VALUES ($1, $2)"
 
-	if config.DbType == "mysql" {
+	if conf.DbType == "mysql" {
 		sql = "INSERT INTO domains (name, type) VALUES (?, ?)"
 	}
 
@@ -79,7 +79,7 @@ func (d *Domain) Create() error {
 func (d *Domain) Update() error {
 	sql := "UPDATE domains SET name=$1 WHERE id=$2"
 
-	if config.DbType == "mysql" {
+	if conf.DbType == "mysql" {
 		sql = "UPDATE domains SET name=? WHERE id=?"
 	}
 
@@ -92,7 +92,7 @@ func (d *Domain) Delete() error {
 	sql := "DELETE FROM domains WHERE id = $1"
 	recSql := "DELETE FROM records WHERE domain_id = $1"
 
-	if config.DbType == "mysql" {
+	if conf.DbType == "mysql" {
 		sql = "DELETE FROM domains WHERE id = ?"
 		recSql = "DELETE FROM records WHERE domain_id = ?"
 	}

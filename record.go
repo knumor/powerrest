@@ -20,7 +20,7 @@ type Record struct {
 func FindRecord(id int) (*Record, error) {
 	sql := "SELECT id, domain_id, name, type, content, ttl, prio FROM records WHERE id = $1"
 
-	if config.DbType == "mysql" {
+	if conf.DbType == "mysql" {
 		sql = "SELECT id, domain_id, name, type, content, ttl, prio FROM records WHERE id = ?"
 	}
 
@@ -73,7 +73,7 @@ func (r *Record) Create() error {
 	sql := "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) " +
 		"VALUES ($1, $2, $3, $4, $5, $6, extract(epoch from now())::integer)"
 
-	if config.DbType == "mysql" {
+	if conf.DbType == "mysql" {
 		sql = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES (?, ?, ?, ?, ?, ?)"
 	}
 
@@ -93,7 +93,7 @@ func (r *Record) Update() error {
 	sql := "UPDATE records SET name=$1, type=$2, content=$3, ttl=$4, prio=$5, " +
 		"change_date=extract(epoch from now())::integer WHERE id=$6"
 
-	if config.DbType == "mysql" {
+	if conf.DbType == "mysql" {
 		sql = "UPDATE records SET name=?, type=?, content=?, ttl=?, prio=? WHERE id=?"
 	}
 
@@ -105,7 +105,7 @@ func (r *Record) Update() error {
 func (r *Record) Delete() error {
 	sql := "DELETE FROM records WHERE id = $1"
 
-	if config.DbType == "mysql" {
+	if conf.DbType == "mysql" {
 		sql = "DELETE FROM records WHERE id = ?"
 	}
 
