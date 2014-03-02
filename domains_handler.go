@@ -35,6 +35,7 @@ func domainCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Location", fmt.Sprintf("/v1/domains/%d", domain_id))
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(201)
 	enc := json.NewEncoder(w)
 	err = enc.Encode(&domain)
