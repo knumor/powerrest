@@ -61,19 +61,45 @@ func AllDomains() []*Domain {
 	return domains
 }
 
-func (d *Domain) Create() error {
-	sql := "INSERT INTO domains (name, type) VALUES ($1, $2)"
+// Create new domain, returning the id
+func (d *Domain) Create() (int64, error) {
 
 	if conf.DbType == "mysql" {
-		sql = "INSERT INTO domains (name, type) VALUES (?, ?)"
-	}
+		// MySQL supports LastInsertId()
+		sql := "INSERT INTO domains (name, type) VALUES (?, ?)"
 
-	_, err := db.Exec(
-		sql,
-		d.Name,
-		d.Type,
-	)
-	return err
+		res, err := db.Exec(
+			sql,
+			d.Name,
+			d.Type,
+		)
+
+		if err != nil {
+			return -1, err
+		}
+
+		domain_id, id_err := res.LastInsertId()
+		if id_err != nil {
+			return -1, id_err
+		}
+
+		return domain_id, err
+	} else {
+		// PostgreSQL driver does not support it, use RETURNING instead
+		sql := "INSERT INTO domains (name, type) VALUES ($1, $2) RETURNING id"
+		var domain_id int64
+		err := db.QueryRow(
+			sql,
+			d.Name,
+			d.Type,
+		).Scan(&domain_id)
+
+		if err != nil {
+			return -1, err
+		}
+
+		return domain_id, err
+	}
 }
 
 func (d *Domain) Update() error {

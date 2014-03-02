@@ -5,6 +5,7 @@ import (
 
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 )
@@ -28,11 +29,13 @@ func domainCreate(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	err = domain.Create()
+	domain_id, err := domain.Create()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+	w.Header().Set("Location", fmt.Sprintf("/v1/domains/%d", domain_id))
+	w.WriteHeader(201)
 }
 
 func domainShow(w http.ResponseWriter, r *http.Request) {
