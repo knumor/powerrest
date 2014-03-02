@@ -36,6 +36,12 @@ func domainCreate(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Location", fmt.Sprintf("/v1/domains/%d", domain_id))
 	w.WriteHeader(201)
+	enc := json.NewEncoder(w)
+	err = enc.Encode(&domain)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func domainShow(w http.ResponseWriter, r *http.Request) {

@@ -83,6 +83,7 @@ func (d *Domain) Create() (int64, error) {
 			return -1, id_err
 		}
 
+		d.Id = int(domain_id)
 		return domain_id, err
 	} else {
 		// PostgreSQL driver does not support it, use RETURNING instead
@@ -98,6 +99,7 @@ func (d *Domain) Create() (int64, error) {
 			return -1, err
 		}
 
+		d.Id = int(domain_id)
 		return domain_id, err
 	}
 }
