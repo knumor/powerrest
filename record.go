@@ -70,24 +70,56 @@ func AllRecords() []*Record {
 }
 
 func (r *Record) Create() error {
-	sql := "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) " +
-		"VALUES ($1, $2, $3, $4, $5, $6, extract(epoch from now())::integer)"
 
 	if conf.DbType == "mysql" {
-		sql = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) " +
+		// MySQL supports LastInsertId()
+		sql := "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) " +
 			" VALUES (?, ?, ?, ?, ?, ?, UNIX_TIMESTAMP())"
-	}
 
-	_, err := db.Exec(
-		sql,
-		r.DomainId,
-		r.Name,
-		r.Type,
-		r.Content,
-		r.Ttl,
-		r.Priority,
-	)
-	return err
+		res, err := db.Exec(
+			sql,
+			r.DomainId,
+			r.Name,
+			r.Type,
+			r.Content,
+			r.Ttl,
+			r.Priority,
+		)
+
+		if err != nil {
+			return err
+		}
+
+		record_id, id_err := res.LastInsertId()
+		if id_err != nil {
+			return id_err
+		}
+
+		r.Id = int(record_id)
+		return err
+	} else {
+		// PostgreSQL driver does not support it, use RETURNING instead
+		sql := "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) " +
+			"VALUES ($1, $2, $3, $4, $5, $6, extract(epoch from now())::integer) RETURNING id"
+
+		var record_id int64
+		err := db.QueryRow(
+			sql,
+			r.DomainId,
+			r.Name,
+			r.Type,
+			r.Content,
+			r.Ttl,
+			r.Priority,
+		).Scan(&record_id)
+
+		if err != nil {
+			return err
+		}
+
+		r.Id = int(record_id)
+		return err
+	}
 }
 
 func (r *Record) Update() error {

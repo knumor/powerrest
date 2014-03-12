@@ -5,7 +5,6 @@ import (
 
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 )
@@ -29,12 +28,12 @@ func domainCreate(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	domain_id, err := domain.Create()
+	err = domain.Create()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Location", fmt.Sprintf("/v1/domains/%d", domain_id))
+	w.Header().Set("Location", "/v1/domains/"+strconv.Itoa(domain.Id))
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(201)
 	enc := json.NewEncoder(w)

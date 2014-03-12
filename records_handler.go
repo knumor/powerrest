@@ -33,6 +33,16 @@ func recordCreate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+	w.Header().Set("Location", "/v1/records/"+strconv.Itoa(record.Id))
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	enc := json.NewEncoder(w)
+	err = enc.Encode(&record)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 }
 
 func recordShow(w http.ResponseWriter, r *http.Request) {

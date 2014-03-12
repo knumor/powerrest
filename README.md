@@ -14,7 +14,7 @@ Restful API for PowerDNS. It's written in Go (golang) and is extremely light on 
 
 Response
 
-The operations all return `200 OK` on success, except the create operation which returns the location of the created domain with the `201 Created` status code. The create operation also returns the newly created object as JSON in the body.
+The operations all return `200 OK` on success, except the create operation which returns the location of the created domain or record with the `201 Created` status code. The create operation also returns the newly created object as JSON in the body.
 
 List domains
 
@@ -44,6 +44,10 @@ List records
 Create new record
 
 `curl -X POST --data-binary '{"domain_id":1,"name":"example.com","type":"A","content":"192.168.1.1","ttl":3600}' "http://127.0.0.1/v1/records"`
+
+    HTTP/1.1 201 Created
+    Location: /v1/records/1
+
 
 Update record
 
