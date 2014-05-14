@@ -1,0 +1,15 @@
+{
+    "ConfigVersion": "0.9",
+    "TaskSettings": {
+        "pkg-build": {
+            "metadata": {
+                "maintainer": "morten.knutsen@uninett.no",
+                "description": "REST api for powerdns authorative server"
+            },
+            "metadata-deb": {
+                "Depends": "",
+                "Section": "main"
+            }
+        }
+    }
+}
