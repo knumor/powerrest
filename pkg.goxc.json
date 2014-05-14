@@ -7,7 +7,7 @@
                 "description": "REST api for powerdns authorative server"
             },
             "metadata-deb": {
-                "Depends": "",
+                "Depends": "libc6",
                 "Section": "main"
             }
         }
